@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>AI Digit Classifier</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🤖 AI Digit Classifier</h1>
+
+    <p>Upload a handwritten digit image</p>
+
+    <input type="file" id="image" onchange="previewImage()">
+
+    <br><br>
+
+    <img id="preview" src="" alt="Image Preview">
+
+    <br><br>
+
+    <button onclick="predictDigit()">
+        Predict Digit
+    </button>
+
+    <h2 id="result"></h2>
+
+</div>
+
+<script>
+
+function previewImage(){
+
+    const file =
+    document.getElementById("image").files[0]
+
+    const preview =
+    document.getElementById("preview")
+
+    if(file){
+
+        preview.src =
+        URL.createObjectURL(file)
+
+        preview.style.display = "block"
+    }
+}
+
+async function predictDigit(){
+
+    const fileInput =
+    document.getElementById("image")
+
+    const formData =
+    new FormData()
+
+    formData.append(
+        "file",
+        fileInput.files[0]
+    )
+
+    document.getElementById(
+        "result"
+    ).innerHTML =
+    "Predicting..."
+
+    const response =
+    await fetch(
+        "/predict",
+        {
+            method:"POST",
+            body:formData
+        }
+    )
+
+    const data =
+    await response.json()
+
+    document.getElementById(
+        "result"
+    ).innerHTML =
+
+        "🎯 Digit: " +
+        data.digit +
+
+        "<br><br>📈 Confidence: " +
+        data.confidence + "%"
+}
+
+</script>
+
+</body>
+</html>
